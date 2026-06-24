@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent
 BACKEND_DIR = ROOT_DIR / "backend"
-FRONTEND_DIR = ROOT_DIR / "frontend"
+
 
 def run_command(cmd, cwd=None, shell=True):
     """Run a system command and print output."""
@@ -51,24 +51,14 @@ def main():
         print("Error: requirements.txt not found in backend/.")
         sys.exit(1)
 
-    # 2. Setup Frontend dependencies & build
-    if not (FRONTEND_DIR / "node_modules").exists():
-        print("Installing frontend dependencies (npm install)...")
-        if not run_command("npm install", cwd=FRONTEND_DIR):
-            print("Warning: npm install failed. Make sure Node.js is installed.")
-            
-    print("Building frontend (npm run build)...")
-    if not run_command("npm run build", cwd=FRONTEND_DIR):
-        print("Warning: Frontend build failed. Static assets might not be served correctly.")
-
-    # 3. Ensure uploads/ and storage/ directories exist
+    # 2. Ensure uploads/ and storage/ directories exist
     os.makedirs(BACKEND_DIR / "uploads", exist_ok=True)
     os.makedirs(BACKEND_DIR / "storage", exist_ok=True)
 
-    # 4. Start FastAPI server
-    print("\nStarting backend server on http://localhost:8000...")
-    uvicorn_cmd = f"{python_path} -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
-    run_command(uvicorn_cmd, cwd=BACKEND_DIR)
+    # 3. Start Streamlit server
+    print("\nStarting Streamlit UI on http://localhost:8501...")
+    streamlit_cmd = f"{python_path} -m streamlit run streamlit_app.py --server.port 8501"
+    run_command(streamlit_cmd, cwd=BACKEND_DIR)
 
 if __name__ == "__main__":
     main()

@@ -8,3 +8,4 @@ llama-index-embeddings-google-genai>=0.1.0
 python-dotenv==1.0.1
 pypdf>=4.2.0
 docx2txt==0.8
+streamlit>=1.35.0
