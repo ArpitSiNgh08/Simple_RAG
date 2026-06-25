@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from app.rag import rag_manager, get_metadata
 from app import config
 
+
 # Page configuration with premium title and icon
 st.set_page_config(
     page_title="DocuMind AI - PDF & Document RAG",
