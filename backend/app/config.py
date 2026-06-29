@@ -12,7 +12,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # Models
 # Default to gemini-2.0-flash-lite for speed and cost-efficiency
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-2.0-flash-lite")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-2.0-flash")
 # Default to gemini-embedding-2 for embeddings
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "gemini-embedding-2")
 

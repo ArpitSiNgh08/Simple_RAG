@@ -171,6 +171,9 @@ with col_docs:
                         rag_manager.add_document(str(file_path), file.name, doc_id)
                         st.toast(f"✅ Successfully indexed {file.name}", icon="🎉")
                     except Exception as e:
+                        # Clean up physical file on failure
+                        if file_path.exists():
+                            file_path.unlink()
                         st.error(f"Failed to process {file.name}: {str(e)}")
         
         # Clear uploader state to allow re-uploads
