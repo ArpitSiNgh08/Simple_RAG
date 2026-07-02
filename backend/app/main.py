@@ -39,7 +39,7 @@ class SettingsRequest(BaseModel):
 
 @app.get("/api/status")
 async def get_status():
-    """Check if Gemini API Key is configured and the system is initialized."""
+    """Check if OpenRouter API Key is configured and the system is initialized."""
     return {
         "initialized": rag_manager.initialized,
         "has_api_key": bool(rag_manager.api_key),
@@ -56,9 +56,9 @@ async def save_settings(payload: SettingsRequest):
         rag_manager.initialize_models(api_key=api_key)
         
         # Save API key to .env file for persistence across restarts
+        from dotenv import set_key
         env_path = Path(__file__).resolve().parent.parent / ".env"
-        with open(env_path, "w", encoding="utf-8") as f:
-            f.write(f"GEMINI_API_KEY={api_key}\n")
+        set_key(str(env_path), "OPENROUTER_API_KEY", api_key)
             
         return {"status": "success", "initialized": rag_manager.initialized}
     except Exception as e:
@@ -77,7 +77,7 @@ async def upload_document(file: UploadFile = File(...)):
     if not rag_manager.initialized:
         raise HTTPException(
             status_code=400, 
-            detail="RAG Engine not initialized. Please configure a valid Gemini API Key first."
+            detail="RAG Engine not initialized. Please configure a valid OpenRouter API Key first."
         )
 
     filename = file.filename
@@ -130,7 +130,7 @@ async def query_documents(payload: QueryRequest):
     if not rag_manager.initialized:
         raise HTTPException(
             status_code=400, 
-            detail="RAG Engine not initialized. Please configure a Gemini API Key."
+            detail="RAG Engine not initialized. Please configure an OpenRouter API Key."
         )
 
     try:

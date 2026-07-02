@@ -108,7 +108,7 @@ with st.sidebar:
         st.success("🟢 RAG Engine Online")
     else:
         st.error("🔴 RAG Engine Offline")
-        st.info("Please verify the GEMINI_API_KEY in the `.env` file.")
+        st.info("Please verify both OPENROUTER_API_KEY and GEMINI_API_KEY in the `.env` file.")
         
     st.markdown("---")
     
@@ -256,7 +256,7 @@ with col_chat:
     # Chat Input
     if query_text := st.chat_input("Ask a question about the uploaded documents..."):
         if not rag_manager.initialized:
-            st.error("RAG Engine is not initialized. Please verify your Gemini API key.")
+            st.error("RAG Engine is not initialized. Please verify your API keys.")
         else:
             # Append and display user message
             st.session_state.messages.append({"role": "user", "content": query_text})

@@ -4,6 +4,7 @@ python-multipart==0.0.9
 llama-index>=0.10.50
 llama-index-readers-file>=0.1.25
 llama-index-llms-google-genai>=0.1.5
+llama-index-llms-openrouter
 llama-index-embeddings-google-genai>=0.1.0
 python-dotenv==1.0.1
 pypdf>=4.2.0

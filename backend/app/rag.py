@@ -13,7 +13,7 @@ from llama_index.core import (
     Settings,
 )
 from llama_index.core.prompts import PromptTemplate
-from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.llms.openrouter import OpenRouter
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.core.postprocessor import SimilarityPostprocessor
 
@@ -47,7 +47,8 @@ class RAGManager:
     def __init__(self):
         self.index = None
         self.initialized = False
-        self.api_key = config.GEMINI_API_KEY
+        self.api_key = config.OPENROUTER_API_KEY
+        self.gemini_api_key = config.GEMINI_API_KEY
         self.initialize_models()
 
     def initialize_models(self, api_key: str = None):
@@ -56,21 +57,22 @@ class RAGManager:
         if api_key:
             self.api_key = api_key
         
-        if not self.api_key or self.api_key == "your_gemini_api_key_here":
-            logger.warning("No valid Gemini API key provided. RAG Manager will require setup.")
+        if not self.api_key or self.api_key == "your_openrouter_api_key_here":
+            logger.warning("No valid OpenRouter API key provided. RAG Manager will require setup.")
             self.initialized = False
             return
 
         try:
-            # Configure LlamaIndex to use Gemini LLM and Embeddings
-            Settings.llm = GoogleGenAI(
+            # Configure LlamaIndex to use OpenRouter LLM and Gemini Embeddings
+            Settings.llm = OpenRouter(
                 model=config.LLM_MODEL, 
                 api_key=self.api_key,
-                temperature=0.2
+                temperature=0.2,
+                extra_body={"openrouter_transforms": ["middle-out"]}
             )
             Settings.embed_model = GoogleGenAIEmbedding(
                 model_name=config.EMBEDDING_MODEL, 
-                api_key=self.api_key,
+                api_key=self.gemini_api_key,
                 embed_batch_size=16
             )
             
@@ -99,7 +101,7 @@ class RAGManager:
     def add_document(self, file_path: str, filename: str, doc_id: str) -> Dict[str, Any]:
         """Parse a document and insert it into the Vector Store Index."""
         if not self.initialized:
-            raise ValueError("RAG Engine is not initialized. Please set a valid Gemini API Key.")
+            raise ValueError("RAG Engine is not initialized. Please set a valid OpenRouter API Key.")
 
         # Read the document using SimpleDirectoryReader
         reader = SimpleDirectoryReader(input_files=[file_path])
@@ -177,7 +179,7 @@ class RAGManager:
         """Query the index and return the answer along with source citations."""
         if not self.initialized:
             return {
-                "answer": "RAG Engine is not initialized. Please set a valid Gemini API Key in the settings.",
+                "answer": "RAG Engine is not initialized. Please set a valid OpenRouter API Key in the settings.",
                 "citations": []
             }
 
