@@ -151,6 +151,7 @@ with col_docs:
     )
     
     if uploaded_files:
+        new_doc_added = False
         for file in uploaded_files:
             # Check if file has already been uploaded and indexed to prevent redundant work
             meta = get_metadata()
@@ -170,14 +171,16 @@ with col_docs:
                         # Add to index
                         rag_manager.add_document(str(file_path), file.name, doc_id)
                         st.toast(f"✅ Successfully indexed {file.name}", icon="🎉")
+                        new_doc_added = True
                     except Exception as e:
                         # Clean up physical file on failure
                         if file_path.exists():
                             file_path.unlink()
                         st.error(f"Failed to process {file.name}: {str(e)}")
         
-        # Clear uploader state to allow re-uploads
-        st.rerun()
+        # Only rerun if we actually added a new document
+        if new_doc_added:
+            st.rerun()
 
     # Document Registry List
     st.markdown("### 📚 Indexed Documents")
